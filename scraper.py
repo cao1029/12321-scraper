@@ -62,7 +62,7 @@ def read_csv():
     if not DATA_FILE.exists():
         return []
     rows = []
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
+    with open(DATA_FILE, "r", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         for row in reader:
             rows.append({
