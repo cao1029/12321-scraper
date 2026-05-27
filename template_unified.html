@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12321 投诉数据报告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; }
+.header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: #fff; padding: 24px 40px; text-align: center; }
+.header h1 { font-size: 24px; margin-bottom: 6px; }
+.header .subtitle { font-size: 13px; opacity: 0.85; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+.cards { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.card { flex: 1; min-width: 160px; background: #fff; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.card .label { font-size: 13px; color: #888; margin-bottom: 6px; }
+.card .value { font-size: 28px; font-weight: bold; }
+.card.green .value { color: #2e7d32; }
+.card.blue .value { color: #1565c0; }
+.card.orange .value { color: #e65100; }
+
+.section { background: #fff; border-radius: 10px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.section h2 { font-size: 18px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #e8e8e8; }
+.section h2 .badge { font-size: 12px; color: #888; font-weight: normal; margin-left: 8px; }
+
+.chart-wrap { width: 100%; height: 380px; margin-bottom: 20px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { border: 1px solid #eee; padding: 10px 12px; text-align: center; }
+th { background: #f5f7fa; font-weight: 600; }
+tr:hover { background: #fafbfc; }
+.empty { text-align: center; color: #aaa; padding: 40px; }
+
+.footer { text-align: center; color: #aaa; font-size: 12px; padding: 10px 0 30px; }
+
+@media (max-width: 768px) {
+  .cards { flex-direction: column; }
+  .header { padding: 16px 20px; }
+  .container { padding: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>12321 网络不良与垃圾信息举报受理中心</h1>
+  <div class="subtitle">投诉数据抓取报告 | 更新时间: {{UPDATE_TIME}}</div>
+</div>
+
+<div class="container">
+
+  <!-- Summary Cards -->
+  <div class="cards">
+    <div class="card green">
+      <div class="label">最新投诉量</div>
+      <div class="value">{{LATEST_COUNT}}</div>
+    </div>
+    <div class="card blue">
+      <div class="label">今日抓取次数</div>
+      <div class="value">{{TODAY_POINTS}}</div>
+    </div>
+    <div class="card orange">
+      <div class="label">本月统计天数</div>
+      <div class="value">{{MONTH_DAYS}}</div>
+    </div>
+    <div class="card blue">
+      <div class="label">月均日投诉量</div>
+      <div class="value">{{MONTH_AVG}}</div>
+    </div>
+  </div>
+
+  <!-- Section 1: Daily per-time-slot -->
+  <div class="section">
+    <h2>当日分时段抓取记录 <span class="badge">{{DATE_STR}}</span></h2>
+    <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
+    <table>
+      <thead><tr><th>抓取时间</th><th>投诉数量</th></tr></thead>
+      <tbody>{{DAILY_TABLE_ROWS}}</tbody>
+    </table>
+  </div>
+
+  <!-- Section 2: Monthly daily totals -->
+  <div class="section">
+    <h2>月度每日投诉总量 <span class="badge">{{CURRENT_MONTH}}</span></h2>
+    <p style="color:#888;font-size:13px;margin-bottom:12px;">取每日最后一次抓取数据作为当日投诉总量</p>
+    <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
+    <table>
+      <thead><tr><th>日期</th><th>当日投诉总量</th><th>抓取时间</th></tr></thead>
+      <tbody>{{MONTHLY_TABLE_ROWS}}</tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">数据来源: www.12321.cn | 自动抓取生成</div>
+
+<script>
+// Daily chart
+(function() {
+  var ctx = document.getElementById('dailyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [{{DAILY_LABELS}}],
+      datasets: [{
+        label: '投诉数量',
+        data: [{{DAILY_COUNTS}}],
+        backgroundColor: '#4CAF50',
+        borderColor: '#388E3C',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: '{{DATE_STR}} 各时段投诉数量', font: { size: 15 } },
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          min: {{DAILY_YMIN}},
+          max: {{DAILY_YMAX}},
+          ticks: { callback: function(v) { return v.toLocaleString(); } }
+        }
+      }
+    }
+  });
+})();
+
+// Monthly chart
+(function() {
+  var ctx = document.getElementById('monthlyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [{{MONTHLY_LABELS}}],
+      datasets: [{
+        label: '当日投诉总量',
+        data: [{{MONTHLY_COUNTS}}],
+        backgroundColor: '#42A5F5',
+        borderColor: '#1E88E5',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: '{{CURRENT_MONTH}} 每日投诉总量', font: { size: 15 } },
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          min: {{MONTHLY_YMIN}},
+          max: {{MONTHLY_YMAX}},
+          ticks: { callback: function(v) { return v.toLocaleString(); } },
+          title: { display: true, text: '投诉数量' }
+        },
+        x: { title: { display: true, text: '日期' } }
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

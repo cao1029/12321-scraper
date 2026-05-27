@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>12321 投诉数据 - 月度柱状图</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+body { font-family: 'Microsoft YaHei', sans-serif; margin: 40px; background: #f5f5f5; }
+.container { max-width: 1100px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+h1 { text-align: center; color: #333; }
+.chart-box { width: 100%; height: 500px; margin: 20px 0; }
+.info { text-align: center; color: #666; margin: 10px 0; font-size: 14px; }
+.summary-box { display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap; }
+.summary-item { text-align: center; padding: 15px 25px; background: #e3f2fd; border-radius: 8px; }
+.summary-item .label { font-size: 14px; color: #666; }
+.summary-item .value { font-size: 28px; font-weight: bold; color: #1565c0; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+th { background: #1976D2; color: #fff; }
+tr:nth-child(even) { background: #f9f9f9; }
+.nav { text-align: center; margin-top: 15px; }
+.nav a { color: #1976D2; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>12321 投诉数据 - 月度统计</h1>
+<p class="info">月份: {{CURRENT_MONTH}} | 统计天数: {{STAT_DAYS}} 天 | 取每日最后一次抓取数据作为当日总量</p>
+<div class="summary-box">
+<div class="summary-item"><div class="label">月均日投诉量</div><div class="value">{{MONTHLY_AVG}}</div></div>
+<div class="summary-item"><div class="label">统计天数</div><div class="value">{{STAT_DAYS}}</div></div>
+<div class="summary-item"><div class="label">今日最新</div><div class="value">{{LATEST_COUNT}}</div></div>
+</div>
+<div class="chart-box"><canvas id="monthlyChart"></canvas></div>
+<h2 style="text-align:center;">每日数据明细（当日最后一次抓取 = 当日总量）</h2>
+<table>
+<tr><th>日期</th><th>投诉总量</th><th>抓取时间</th></tr>
+{{TABLE_ROWS}}
+</table>
+<p class="nav"><a href="daily_{{DATE_STR}}.html">查看当日详细柱状图</a></p>
+</div>
+<script>
+var ctx = document.getElementById('monthlyChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [{{MONTHLY_LABELS}}],
+        datasets: [{
+            label: '当日投诉总量',
+            data: [{{MONTHLY_COUNTS}}],
+            backgroundColor: '#42A5F5',
+            borderColor: '#1E88E5',
+            borderWidth: 1,
+            borderRadius: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            title: { display: true, text: '{{CURRENT_MONTH}} 每日投诉总量柱状图', font: { size: 16 } },
+            legend: { display: false }
+        },
+        scales: {
+            y: {
+                beginAtZero: false,
+                min: {{MONTHLY_YMIN}},
+                max: {{MONTHLY_YMAX}},
+                ticks: { callback: function(v) { return v.toLocaleString(); } },
+                title: { display: true, text: '投诉数量' }
+            },
+            x: {
+                title: { display: true, text: '日期' }
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>

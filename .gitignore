@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+
+# Local config
+setup_scheduler.ps1
+
+# Old reports (unified report.html is the one we keep)
+reports/daily_*.html
+reports/monthly_*.html
