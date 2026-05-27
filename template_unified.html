@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>12321 鎶曡瘔鏁版嵁鎶ュ憡</title>
+<title>12321 投诉数据报告</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,8 +48,8 @@ tr:hover { background: #fafbfc; }
 <body>
 
 <div class="header">
-  <h1>12321 缃戠粶涓嶈壇涓庡瀮鍦句俊鎭妇鎶ュ彈鐞嗕腑蹇?/h1>
-  <div class="subtitle">鎶曡瘔鏁版嵁鎶撳彇鎶ュ憡 | 鏇存柊鏃堕棿: {{UPDATE_TIME}}</div>
+  <h1>12321 网络不良与垃圾信息举报受理中心</h1>
+  <div class="subtitle">投诉数据抓取报告 | 更新时间: {{UPDATE_TIME}}</div>
 </div>
 
 <div class="container">
@@ -57,47 +57,47 @@ tr:hover { background: #fafbfc; }
   <!-- Summary Cards -->
   <div class="cards">
     <div class="card green">
-      <div class="label">鏈€鏂版姇璇夐噺</div>
+      <div class="label">最新投诉量</div>
       <div class="value">{{LATEST_COUNT}}</div>
     </div>
     <div class="card blue">
-      <div class="label">浠婃棩鎶撳彇娆℃暟</div>
+      <div class="label">今日抓取次数</div>
       <div class="value">{{TODAY_POINTS}}</div>
     </div>
     <div class="card orange">
-      <div class="label">鏈湀缁熻澶╂暟</div>
+      <div class="label">本月统计天数</div>
       <div class="value">{{MONTH_DAYS}}</div>
     </div>
     <div class="card blue">
-      <div class="label">鏈堝潎鏃ユ姇璇夐噺</div>
+      <div class="label">月均日投诉量</div>
       <div class="value">{{MONTH_AVG}}</div>
     </div>
   </div>
 
   <!-- Section 1: Daily per-time-slot -->
   <div class="section">
-    <h2>褰撴棩鍒嗘椂娈垫姄鍙栬褰?<span class="badge">{{DATE_STR}}</span></h2>
+    <h2>当日分时段抓取记录 <span class="badge">{{DATE_STR}}</span></h2>
     <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
     <table>
-      <thead><tr><th>鎶撳彇鏃堕棿</th><th>鎶曡瘔鏁伴噺</th></tr></thead>
+      <thead><tr><th>抓取时间</th><th>投诉数量</th></tr></thead>
       <tbody>{{DAILY_TABLE_ROWS}}</tbody>
     </table>
   </div>
 
   <!-- Section 2: Monthly daily totals -->
   <div class="section">
-    <h2>鏈堝害姣忔棩鎶曡瘔鎬婚噺 <span class="badge">{{CURRENT_MONTH}}</span></h2>
-    <p style="color:#888;font-size:13px;margin-bottom:12px;">鍙栨瘡鏃ユ渶鍚庝竴娆℃姄鍙栨暟鎹綔涓哄綋鏃ユ姇璇夋€婚噺</p>
+    <h2>月度每日投诉总量 <span class="badge">{{CURRENT_MONTH}}</span></h2>
+    <p style="color:#888;font-size:13px;margin-bottom:12px;">取每日最后一次抓取数据作为当日投诉总量</p>
     <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
     <table>
-      <thead><tr><th>鏃ユ湡</th><th>褰撴棩鎶曡瘔鎬婚噺</th><th>鎶撳彇鏃堕棿</th></tr></thead>
+      <thead><tr><th>日期</th><th>当日投诉总量</th><th>抓取时间</th></tr></thead>
       <tbody>{{MONTHLY_TABLE_ROWS}}</tbody>
     </table>
   </div>
 
 </div>
 
-<div class="footer">鏁版嵁鏉ユ簮: www.12321.cn | 鑷姩鎶撳彇鐢熸垚</div>
+<div class="footer">数据来源: www.12321.cn | 自动抓取生成</div>
 
 <script>
 // Daily chart
@@ -108,7 +108,7 @@ tr:hover { background: #fafbfc; }
     data: {
       labels: [{{DAILY_LABELS}}],
       datasets: [{
-        label: '鎶曡瘔鏁伴噺',
+        label: '投诉数量',
         data: [{{DAILY_COUNTS}}],
         backgroundColor: '#4CAF50',
         borderColor: '#388E3C',
@@ -120,7 +120,7 @@ tr:hover { background: #fafbfc; }
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: '{{DATE_STR}} 鍚勬椂娈垫姇璇夋暟閲?, font: { size: 15 } },
+        title: { display: true, text: '{{DATE_STR}} 各时段投诉数量', font: { size: 15 } },
         legend: { display: false }
       },
       scales: {
@@ -143,7 +143,7 @@ tr:hover { background: #fafbfc; }
     data: {
       labels: [{{MONTHLY_LABELS}}],
       datasets: [{
-        label: '褰撴棩鎶曡瘔鎬婚噺',
+        label: '当日投诉总量',
         data: [{{MONTHLY_COUNTS}}],
         backgroundColor: '#42A5F5',
         borderColor: '#1E88E5',
@@ -155,7 +155,7 @@ tr:hover { background: #fafbfc; }
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: '{{CURRENT_MONTH}} 姣忔棩鎶曡瘔鎬婚噺', font: { size: 15 } },
+        title: { display: true, text: '{{CURRENT_MONTH}} 每日投诉总量', font: { size: 15 } },
         legend: { display: false }
       },
       scales: {
@@ -164,9 +164,9 @@ tr:hover { background: #fafbfc; }
           min: {{MONTHLY_YMIN}},
           max: {{MONTHLY_YMAX}},
           ticks: { callback: function(v) { return v.toLocaleString(); } },
-          title: { display: true, text: '鎶曡瘔鏁伴噺' }
+          title: { display: true, text: '投诉数量' }
         },
-        x: { title: { display: true, text: '鏃ユ湡' } }
+        x: { title: { display: true, text: '日期' } }
       }
     }
   });
