@@ -2,8 +2,8 @@ name: 12321 Scraper
 
 on:
   schedule:
-    # Every hour from 0:00 to 16:00 UTC (= 8:00 to 24:00 China time)
-    - cron: "0 0-16 * * *"
+    # Every hour (Python script checks 8:00-24:00 China time window)
+    - cron: "0 * * * *"
   workflow_dispatch:  # Allow manual trigger
   push:
     branches: [master]
