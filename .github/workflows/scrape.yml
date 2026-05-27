@@ -6,7 +6,7 @@ on:
     - cron: "0 0-16 * * *"
   workflow_dispatch:  # Allow manual trigger
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - "scraper.py"
       - "template_unified.html"
