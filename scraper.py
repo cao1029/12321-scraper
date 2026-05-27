@@ -170,6 +170,13 @@ def generate_report(rows, latest_count, now_cn):
 def main():
     now_cn = datetime.now(CHINA_TZ)
     dt_str = now_cn.strftime("%Y-%m-%d %H:%M:%S")
+    hour_cn = now_cn.hour
+
+    # Only run between 8:00 and 24:00 China time (inclusive)
+    if hour_cn < 8:
+        print(f"[{dt_str}] Outside running window (8:00-24:00), skipping. Current hour: {hour_cn}")
+        return
+    print(f"[{dt_str}] Within running window (8:00-24:00), starting scrape...")
 
     # 1. Fetch
     try:
