@@ -2,7 +2,7 @@ name: 12321 Scraper
 
 on:
   schedule:
-    - cron: "0 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -30,25 +30,27 @@ jobs:
           git diff --staged --quiet && exit 0
           git commit -m "[auto] $(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')"
           git pull --rebase origin master && git push
-      - name: chain
+      - name: wait
+        run: |
+          HOUR=$(TZ='Asia/Shanghai' date +'%-H')
+          MIN=$(TZ='Asia/Shanghai' date +'%-M')
+          echo "Time: ${HOUR}:$(printf '%02d' $MIN) China"
+          if [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 23 ]; then TARGET=$((HOUR + 1)); else TARGET=8; fi
+          NW=$((HOUR * 60 + MIN)); TW=$((TARGET * 60))
+          if [ "$TARGET" -le "$HOUR" ]; then TW=$((TW + 24 * 60)); fi
+          WAIT=$((TW - NW))
+          if [ "$WAIT" -gt 300 ]; then WAIT=300; fi
+          echo "Target: ${TARGET}:00, wait ${WAIT}min"
+          echo "WAIT_MINUTES=$WAIT" >> $GITHUB_ENV
+      - name: trigger
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_PAT }}
           script: |
-            const hour = parseInt(await exec('date', ['+%-H'], {env: {TZ: 'Asia/Shanghai'}}));
-            const min = parseInt(await exec('date', ['+%-M'], {env: {TZ: 'Asia/Shanghai'}}));
-            console.log(`Time: ${hour}:${String(min).padStart(2,'0')} China`);
-            
-            let target = (hour >= 8 && hour < 23) ? hour + 1 : 8;
-            let nowMin = hour * 60 + min;
-            let tgtMin = target * 60;
-            if (target <= hour) tgtMin += 24 * 60;
-            let waitMin = Math.min(tgtMin - nowMin, 300);
-            
-            console.log(`Target: ${target}:00, waiting ${waitMin}min`);
+            const waitMin = parseInt(process.env.WAIT_MINUTES || '60');
+            console.log(`Sleeping ${waitMin} minutes...`);
             await new Promise(r => setTimeout(r, waitMin * 60000));
-            
-            console.log('Triggering next run...');
+            console.log('Triggering next...');
             await github.rest.actions.createWorkflowDispatch({
               owner: 'cao1029',
               repo: '12321-scraper',
