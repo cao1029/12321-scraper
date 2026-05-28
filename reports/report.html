@@ -49,7 +49,7 @@ tr:hover { background: #fafbfc; }
 
 <div class="header">
   <h1>12321 网络不良与垃圾信息举报受理中心</h1>
-  <div class="subtitle">投诉数据抓取报告 | 更新时间: 2026-05-28 19:00:50</div>
+  <div class="subtitle">投诉数据抓取报告 | 更新时间: 2026-05-28 20:01:09</div>
 </div>
 
 <div class="container">
@@ -58,11 +58,11 @@ tr:hover { background: #fafbfc; }
   <div class="cards">
     <div class="card green">
       <div class="label">最新投诉量</div>
-      <div class="value">29,135</div>
+      <div class="value">30,555</div>
     </div>
     <div class="card blue">
       <div class="label">今日抓取次数</div>
-      <div class="value">22</div>
+      <div class="value">23</div>
     </div>
     <div class="card orange">
       <div class="label">本月统计天数</div>
@@ -70,7 +70,7 @@ tr:hover { background: #fafbfc; }
     </div>
     <div class="card blue">
       <div class="label">月均日投诉量</div>
-      <div class="value">36,953</div>
+      <div class="value">37,663</div>
     </div>
   </div>
 
@@ -101,7 +101,8 @@ tr:hover { background: #fafbfc; }
 <tr><td>17:40:55</td><td>26,657</td></tr>
 <tr><td>17:43:14</td><td>26,657</td></tr>
 <tr><td>18:00:33</td><td>26,657</td></tr>
-<tr><td>19:00:50</td><td>29,135</td></tr></tbody>
+<tr><td>19:00:50</td><td>29,135</td></tr>
+<tr><td>20:01:09</td><td>30,555</td></tr></tbody>
     </table>
   </div>
 
@@ -113,7 +114,7 @@ tr:hover { background: #fafbfc; }
     <table>
       <thead><tr><th>日期</th><th>当日投诉总量</th><th>抓取时间</th></tr></thead>
       <tbody><tr><td>2026-05-27</td><td>44,772</td><td>23:50:35</td></tr>
-<tr><td>2026-05-28</td><td>29,135</td><td>19:00:50</td></tr></tbody>
+<tr><td>2026-05-28</td><td>30,555</td><td>20:01:09</td></tr></tbody>
     </table>
   </div>
 
@@ -128,10 +129,10 @@ tr:hover { background: #fafbfc; }
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['08:00', '09:36', '10:00', '10:00', '10:01', '10:13', '11:18', '12:13', '12:24', '13:01', '14:08', '15:09', '16:21', '17:06', '17:08', '17:09', '17:36', '17:38', '17:40', '17:43', '18:00', '19:00'],
+      labels: ['08:00', '09:36', '10:00', '10:00', '10:01', '10:13', '11:18', '12:13', '12:24', '13:01', '14:08', '15:09', '16:21', '17:06', '17:08', '17:09', '17:36', '17:38', '17:40', '17:43', '18:00', '19:00', '20:01'],
       datasets: [{
         label: '投诉数量',
-        data: [2694, 3926, 3926, 3926, 3926, 3926, 10361, 10361, 13592, 13592, 14954, 16775, 23628, 23628, 23628, 23628, 26657, 26657, 26657, 26657, 26657, 29135],
+        data: [2694, 3926, 3926, 3926, 3926, 3926, 10361, 10361, 13592, 13592, 14954, 16775, 23628, 23628, 23628, 23628, 26657, 26657, 26657, 26657, 26657, 29135, 30555],
         backgroundColor: '#4CAF50',
         borderColor: '#388E3C',
         borderWidth: 1,
@@ -148,8 +149,8 @@ tr:hover { background: #fafbfc; }
       scales: {
         y: {
           beginAtZero: false,
-          min: 22434,
-          max: 32049,
+          min: 23527,
+          max: 33611,
           ticks: { callback: function(v) { return v.toLocaleString(); } }
         }
       }
@@ -166,7 +167,7 @@ tr:hover { background: #fafbfc; }
       labels: ['27', '28'],
       datasets: [{
         label: '当日投诉总量',
-        data: [44772, 29135],
+        data: [44772, 30555],
         backgroundColor: '#42A5F5',
         borderColor: '#1E88E5',
         borderWidth: 1,
@@ -183,7 +184,7 @@ tr:hover { background: #fafbfc; }
       scales: {
         y: {
           beginAtZero: false,
-          min: 14567,
+          min: 15277,
           max: 51488,
           ticks: { callback: function(v) { return v.toLocaleString(); } },
           title: { display: true, text: '投诉数量' }
