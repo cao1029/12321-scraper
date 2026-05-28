@@ -21,6 +21,10 @@ on:
     - cron: "0 16 * * *"
   workflow_dispatch:
 
+concurrency:
+  group: scraper-chain
+  cancel-in-progress: false
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
@@ -38,6 +42,7 @@ jobs:
       - run: python scraper.py
 
       - name: push
+        continue-on-error: true
         run: |
           git config user.name "actions"
           git config user.email "actions@github.com"
@@ -45,7 +50,7 @@ jobs:
           git diff --staged --quiet && exit 0
           git commit -m "[auto] $(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')"
           git pull --rebase origin master
-          git push
+          git push || git pull --rebase origin master && git push
 
       - name: trigger-next
         env:
@@ -53,33 +58,29 @@ jobs:
         run: |
           HOUR=$(TZ='Asia/Shanghai' date +'%-H')
           MIN=$(TZ='Asia/Shanghai' date +'%-M')
-          echo "Current China time: ${HOUR}:$(printf '%02d' $MIN)"
+          echo "Time: ${HOUR}:$(printf '%02d' $MIN) China"
           
-          # Calculate target next hour
           if [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 23 ]; then
             TARGET=$((HOUR + 1))
           else
-            TARGET=8  # Next 8am
+            TARGET=8
           fi
           
-          # Calculate wait time
-          NOW_MINUTES=$((HOUR * 60 + MIN))
-          TARGET_MINUTES=$((TARGET * 60))
+          NOW_MIN=$((HOUR * 60 + MIN))
+          TGT_MIN=$((TARGET * 60))
           if [ "$TARGET" -le "$HOUR" ]; then
-            TARGET_MINUTES=$((TARGET_MINUTES + 24 * 60))
+            TGT_MIN=$((TGT_MIN + 24 * 60))
           fi
-          WAIT_MINUTES=$((TARGET_MINUTES - NOW_MINUTES))
+          WAIT_MIN=$((TGT_MIN - NOW_MIN))
           
-          # Cap at 5 hours to stay within 6h job timeout
-          if [ "$WAIT_MINUTES" -gt 300 ]; then
-            echo "Wait (${WAIT_MINUTES}min) exceeds 5h cap, limiting to 300min"
-            WAIT_MINUTES=300
+          # Cap at 300min (5h) to stay under 6h job limit
+          if [ "$WAIT_MIN" -gt 300 ]; then
+            WAIT_MIN=300
           fi
           
-          WAIT_SEC=$((WAIT_MINUTES * 60))
-          echo "Target hour: $TARGET, waiting ${WAIT_MINUTES}min (${WAIT_SEC}s)"
-          sleep $WAIT_SEC
+          echo "Target: ${TARGET}:00, waiting ${WAIT_MIN}min"
+          sleep $((WAIT_MIN * 60))
           
-          echo "Triggering next run..."
+          echo "Triggering next..."
           gh workflow run scraper.yml -R cao1029/12321-scraper
-          echo "Done!"
+          echo "Chain continues!"
