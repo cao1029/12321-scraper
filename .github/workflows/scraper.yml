@@ -53,20 +53,33 @@ jobs:
         run: |
           HOUR=$(TZ='Asia/Shanghai' date +'%-H')
           MIN=$(TZ='Asia/Shanghai' date +'%-M')
+          echo "Current China time: ${HOUR}:$(printf '%02d' $MIN)"
           
+          # Calculate target next hour
           if [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 23 ]; then
-            WAIT=$(( (60 - MIN + 5) * 60 ))
-            echo "Hour $HOUR, waiting ${WAIT}s until next hour"
-            sleep $WAIT
-          elif [ "$HOUR" -eq 23 ]; then
-            WAIT=$(( (9 * 3600) - (MIN * 60) + 300 ))
-            echo "Hour 23 (last), waiting ${WAIT}s until 8am"
-            sleep $WAIT
+            TARGET=$((HOUR + 1))
           else
-            echo "Hour $HOUR outside window, skipping"
-            exit 0
+            TARGET=8  # Next 8am
           fi
+          
+          # Calculate wait time
+          NOW_MINUTES=$((HOUR * 60 + MIN))
+          TARGET_MINUTES=$((TARGET * 60))
+          if [ "$TARGET" -le "$HOUR" ]; then
+            TARGET_MINUTES=$((TARGET_MINUTES + 24 * 60))
+          fi
+          WAIT_MINUTES=$((TARGET_MINUTES - NOW_MINUTES))
+          
+          # Cap at 5 hours to stay within 6h job timeout
+          if [ "$WAIT_MINUTES" -gt 300 ]; then
+            echo "Wait (${WAIT_MINUTES}min) exceeds 5h cap, limiting to 300min"
+            WAIT_MINUTES=300
+          fi
+          
+          WAIT_SEC=$((WAIT_MINUTES * 60))
+          echo "Target hour: $TARGET, waiting ${WAIT_MINUTES}min (${WAIT_SEC}s)"
+          sleep $WAIT_SEC
           
           echo "Triggering next run..."
           gh workflow run scraper.yml -R cao1029/12321-scraper
-          echo "Next run triggered!"
+          echo "Done!"
