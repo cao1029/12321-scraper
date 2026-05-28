@@ -47,6 +47,8 @@ jobs:
           git commit -m "[auto] $(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')"
           git pull --rebase origin master && git push
       - name: chain
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           HOUR=$(TZ='Asia/Shanghai' date +'%-H')
           MIN=$(TZ='Asia/Shanghai' date +'%-M')
@@ -67,9 +69,6 @@ jobs:
           echo "Next: ${TARGET}:00, wait ${WAIT}min"
           sleep $((WAIT * 60))
           
-          curl -s -f -X POST \
-            -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
-            -H "Accept: application/vnd.github+json" \
-            -d '{"ref":"master"}' \
-            "https://api.github.com/repos/cao1029/12321-scraper/actions/workflows/284294670/dispatches" \
-            && echo "Chain OK" || echo "Trigger failed but continuing"
+          echo "Triggering via gh..."
+          gh workflow run scraper.yml -R cao1029/12321-scraper 2>&1
+          echo "Done (exit: $?)"
