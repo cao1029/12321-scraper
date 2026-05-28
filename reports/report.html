@@ -49,7 +49,7 @@ tr:hover { background: #fafbfc; }
 
 <div class="header">
   <h1>12321 网络不良与垃圾信息举报受理中心</h1>
-  <div class="subtitle">投诉数据抓取报告 | 更新时间: 2026-05-27 23:50:35</div>
+  <div class="subtitle">投诉数据抓取报告 | 更新时间: 2026-05-28 08:00:14</div>
 </div>
 
 <div class="container">
@@ -58,46 +58,29 @@ tr:hover { background: #fafbfc; }
   <div class="cards">
     <div class="card green">
       <div class="label">最新投诉量</div>
-      <div class="value">44,772</div>
+      <div class="value">2,694</div>
     </div>
     <div class="card blue">
       <div class="label">今日抓取次数</div>
-      <div class="value">18</div>
+      <div class="value">1</div>
     </div>
     <div class="card orange">
       <div class="label">本月统计天数</div>
-      <div class="value">1</div>
+      <div class="value">2</div>
     </div>
     <div class="card blue">
       <div class="label">月均日投诉量</div>
-      <div class="value">44,772</div>
+      <div class="value">23,733</div>
     </div>
   </div>
 
   <!-- Section 1: Daily per-time-slot -->
   <div class="section">
-    <h2>当日分时段抓取记录 <span class="badge">2026-05-27</span></h2>
+    <h2>当日分时段抓取记录 <span class="badge">2026-05-28</span></h2>
     <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
     <table>
       <thead><tr><th>抓取时间</th><th>投诉数量</th></tr></thead>
-      <tbody><tr><td>11:16:04</td><td>18,197</td></tr>
-<tr><td>11:19:03</td><td>21,935</td></tr>
-<tr><td>11:22:20</td><td>21,935</td></tr>
-<tr><td>11:34:19</td><td>21,935</td></tr>
-<tr><td>12:00:01</td><td>21,935</td></tr>
-<tr><td>13:00:01</td><td>24,986</td></tr>
-<tr><td>14:00:01</td><td>26,375</td></tr>
-<tr><td>15:00:01</td><td>28,207</td></tr>
-<tr><td>16:00:01</td><td>31,525</td></tr>
-<tr><td>17:00:02</td><td>34,819</td></tr>
-<tr><td>17:01:40</td><td>34,819</td></tr>
-<tr><td>17:01:56</td><td>34,819</td></tr>
-<tr><td>17:56:04</td><td>38,021</td></tr>
-<tr><td>20:01:11</td><td>41,929</td></tr>
-<tr><td>23:18:45</td><td>44,772</td></tr>
-<tr><td>23:27:41</td><td>44,772</td></tr>
-<tr><td>23:36:32</td><td>44,772</td></tr>
-<tr><td>23:50:35</td><td>44,772</td></tr></tbody>
+      <tbody><tr><td>08:00:14</td><td>2,694</td></tr></tbody>
     </table>
   </div>
 
@@ -108,7 +91,8 @@ tr:hover { background: #fafbfc; }
     <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
     <table>
       <thead><tr><th>日期</th><th>当日投诉总量</th><th>抓取时间</th></tr></thead>
-      <tbody><tr><td>2026-05-27</td><td>44,772</td><td>23:50:35</td></tr></tbody>
+      <tbody><tr><td>2026-05-27</td><td>44,772</td><td>23:50:35</td></tr>
+<tr><td>2026-05-28</td><td>2,694</td><td>08:00:14</td></tr></tbody>
     </table>
   </div>
 
@@ -123,10 +107,10 @@ tr:hover { background: #fafbfc; }
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['11:16', '11:19', '11:22', '11:34', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '17:01', '17:01', '17:56', '20:01', '23:18', '23:27', '23:36', '23:50'],
+      labels: ['08:00'],
       datasets: [{
         label: '投诉数量',
-        data: [18197, 21935, 21935, 21935, 21935, 24986, 26375, 28207, 31525, 34819, 34819, 34819, 38021, 41929, 44772, 44772, 44772, 44772],
+        data: [2694],
         backgroundColor: '#4CAF50',
         borderColor: '#388E3C',
         borderWidth: 1,
@@ -137,14 +121,14 @@ tr:hover { background: #fafbfc; }
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: '2026-05-27 各时段投诉数量', font: { size: 15 } },
+        title: { display: true, text: '2026-05-28 各时段投诉数量', font: { size: 15 } },
         legend: { display: false }
       },
       scales: {
         y: {
           beginAtZero: false,
-          min: 34475,
-          max: 49250,
+          min: 2074,
+          max: 2964,
           ticks: { callback: function(v) { return v.toLocaleString(); } }
         }
       }
@@ -158,10 +142,10 @@ tr:hover { background: #fafbfc; }
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['27'],
+      labels: ['27', '28'],
       datasets: [{
         label: '当日投诉总量',
-        data: [44772],
+        data: [44772, 2694],
         backgroundColor: '#42A5F5',
         borderColor: '#1E88E5',
         borderWidth: 1,
