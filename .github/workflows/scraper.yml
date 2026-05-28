@@ -30,31 +30,21 @@ jobs:
           git diff --staged --quiet && exit 0
           git commit -m "[auto] $(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')"
           git pull --rebase origin master && git push
-      - name: wait
-        run: |
-          HOUR=$(TZ='Asia/Shanghai' date +'%-H')
-          MIN=$(TZ='Asia/Shanghai' date +'%-M')
-          echo "Time: ${HOUR}:$(printf '%02d' $MIN) China"
-          if [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 23 ]; then TARGET=$((HOUR + 1)); else TARGET=8; fi
-          NW=$((HOUR * 60 + MIN)); TW=$((TARGET * 60))
-          if [ "$TARGET" -le "$HOUR" ]; then TW=$((TW + 24 * 60)); fi
-          WAIT=$((TW - NW))
-          if [ "$WAIT" -gt 300 ]; then WAIT=300; fi
-          echo "Target: ${TARGET}:00, wait ${WAIT}min"
-          echo "WAIT_MINUTES=$WAIT" >> $GITHUB_ENV
       - name: trigger
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_PAT }}
           script: |
-            const waitMin = parseInt(process.env.WAIT_MINUTES || '60');
-            console.log(`Sleeping ${waitMin} minutes...`);
+            const waitMin = 2;
+            console.log(`Test mode: sleeping ${waitMin} minutes...`);
             await new Promise(r => setTimeout(r, waitMin * 60000));
-            console.log('Triggering next...');
-            await github.rest.actions.createWorkflowDispatch({
+            
+            console.log('Triggering next run...');
+            const resp = await github.rest.actions.createWorkflowDispatch({
               owner: 'cao1029',
               repo: '12321-scraper',
               workflow_id: 'scraper.yml',
               ref: 'master'
             });
-            console.log('Chain continues!');
+            console.log(`Response status: ${resp.status}`);
+            console.log('SUCCESS - Chain verified!');
