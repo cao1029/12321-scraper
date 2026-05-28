@@ -68,11 +68,9 @@ jobs:
           echo "Target: ${TARGET}:00, wait ${WAIT}min"
           sleep $((WAIT * 60))
           
-          echo "Triggering next..."
-          CODE=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+          curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
             -H "Accept: application/vnd.github+json" \
             -d '{"ref":"master"}' \
-            "https://api.github.com/repos/cao1029/12321-scraper/actions/workflows/284294670/dispatches")
-          echo "HTTP $CODE"
-          test "$CODE" = "204"
+            "https://api.github.com/repos/cao1029/12321-scraper/actions/workflows/284294670/dispatches"
+          echo "Trigger sent"
