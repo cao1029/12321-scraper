@@ -70,7 +70,7 @@ jobs:
           python3 -c "
 import requests
 r = requests.post(
-    'https://api.github.com/repos/cao1029/12321-scraper/actions/workflows/WFIDPLACEHOLDER/dispatches',
+    'https://api.github.com/repos/cao1029/12321-scraper/actions/workflows/284742166/dispatches',
     headers={'Authorization': 'Bearer ${{ secrets.GH_PAT }}', 'Accept': 'application/vnd.github+json'},
     json={'ref': 'master'}
 )
