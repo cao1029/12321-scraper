@@ -1,4 +1,4 @@
-name: "12321 Scraper"
+name: 12321 Scraper
 
 on:
   schedule:
@@ -67,21 +67,14 @@ jobs:
           echo "Next: ${TARGET}:00, wait ${WAIT}min"
           sleep $((WAIT * 60))
           
-          echo "Triggering via Python API..."
           python3 -c "
-import requests, os
+import requests
 r = requests.post(
     'https://api.github.com/repos/cao1029/12321-scraper/actions/workflows/284294670/dispatches',
-    headers={
-        'Authorization': 'Bearer ${{ secrets.GH_PAT }}',
-        'Accept': 'application/vnd.github+json'
-    },
+    headers={'Authorization': 'Bearer ${{ secrets.GH_PAT }}', 'Accept': 'application/vnd.github+json'},
     json={'ref': 'master'}
 )
 print(f'HTTP {r.status_code}')
-if r.status_code == 204:
-    print('Chain continues!')
-else:
-    print(f'Body: {r.text}')
-    exit(1)
+assert r.status_code == 204, f'Failed: {r.text}'
+print('Chain continues!')
 "
