@@ -131,7 +131,7 @@ def generate_report(rows, latest_count, now_cn):
     if month_counts:
         month_max = int(max(month_counts) * 1.15) + 1
         month_avg = int(sum(month_counts) / len(month_counts))
-    month_ymin = int(month_max * 0.5)
+    month_ymin = int(min(month_counts) * 0.5) if month_counts else 0
 
     month_table_rows = "\n".join(
         f'<tr><td>{r["date"]}</td><td>{r["count"]:,}</td><td>{r["time"]}</td></tr>'
