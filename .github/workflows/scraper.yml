@@ -26,7 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
     steps:
       - uses: actions/checkout@v4
 
@@ -49,31 +48,25 @@ jobs:
           git push
 
       - name: trigger-next
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          # Calculate seconds until next hour (China time)
           HOUR=$(TZ='Asia/Shanghai' date +'%-H')
           MIN=$(TZ='Asia/Shanghai' date +'%-M')
           
           if [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 23 ]; then
-            # Within window: wait until next hour minus current minute
             WAIT=$(( (60 - MIN + 5) * 60 ))
-            echo "Within window (hour $HOUR), waiting ${WAIT}s for next hour..."
+            echo "Hour $HOUR, waiting ${WAIT}s until next hour"
             sleep $WAIT
           elif [ "$HOUR" -eq 23 ]; then
-            # Last run: wait 9 hours until 8am
             WAIT=$(( (9 * 3600) - (MIN * 60) + 300 ))
-            echo "Last run (hour 23), waiting ${WAIT}s for 8am..."
+            echo "Hour 23 (last), waiting ${WAIT}s until 8am"
             sleep $WAIT
           else
-            echo "Hour $HOUR outside window (0-7), exiting without scheduling"
+            echo "Hour $HOUR outside window, skipping"
             exit 0
           fi
           
-          # Trigger next run
-          echo "Triggering next workflow run..."
-          curl -s -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow_id }}/dispatches" \
-            -d '{"ref":"${{ github.ref_name }}"}'
-          echo "Done!"
+          echo "Triggering next run..."
+          gh workflow run scraper.yml -R cao1029/12321-scraper
+          echo "Next run triggered!"
