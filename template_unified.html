@@ -95,6 +95,17 @@ tr:hover { background: #fafbfc; }
     </table>
   </div>
 
+  <!-- Section 3: Cross-tabulation table (time slots x dates) -->
+  <div class="section">
+    <h2>月度分时段数据总览 <span class="badge">{{CURRENT_MONTH}}</span></h2>
+    <p style="color:#888;font-size:13px;margin-bottom:12px;">行为抓取时间点，列为日期，显示对应投诉数量</p>
+    <div style="overflow-x:auto;">
+      <table style="min-width:100%;white-space:nowrap;">
+        {{CROSS_TABLE}}
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <div class="footer">数据来源: www.12321.cn | 自动抓取生成</div>
