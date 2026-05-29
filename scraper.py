@@ -138,6 +138,37 @@ def generate_report(rows, latest_count, now_cn):
         for r in monthly_totals
     ) or '<tr><td colspan="3" class="empty">No data yet</td></tr>'
 
+    # ---- Cross-tabulation table (time slots x dates) ----
+    time_slots = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00",
+                  "16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00","23:55"]
+
+    month_dates_set = sorted(set(r["date"] for r in parsed if r["date"].startswith(current_month)))
+
+    cross_data = {s: {} for s in time_slots}
+    for d in month_dates_set:
+        day_rows = [r for r in parsed if r["date"] == d]
+        for slot in time_slots:
+            sh, sm = map(int, slot.split(":"))
+            smin = sh * 60 + sm
+            best, best_diff = None, 999
+            for r in day_rows:
+                rh, rm, _ = map(int, r["time"].split(":"))
+                diff = abs((rh * 60 + rm) - smin)
+                if diff < best_diff and diff <= 35:
+                    best_diff, best = diff, r
+            if best:
+                cross_data[slot][d] = best["count"]
+
+    cross_header = "<tr><th>时间</th>" + "".join(f"<th>{d[5:]}</th>" for d in month_dates_set) + "</tr>"
+    cross_rows_html = []
+    for slot in time_slots:
+        cells = "".join(
+            f"<td>{cross_data[slot].get(d):,}</td>" if d in cross_data[slot] else "<td>—</td>"
+            for d in month_dates_set
+        )
+        cross_rows_html.append(f"<tr><td>{slot}</td>{cells}</tr>")
+    cross_table = cross_header + "\n" + "\n".join(cross_rows_html) if month_dates_set else '<tr><td colspan="2">暂无数据</td></tr>'
+
     # ---- Read template and fill ----
     if not TEMPLATE_FILE.exists():
         raise RuntimeError(f"Template not found: {TEMPLATE_FILE}")
@@ -161,6 +192,7 @@ def generate_report(rows, latest_count, now_cn):
     report = report.replace("{{MONTHLY_YMIN}}", str(month_ymin))
     report = report.replace("{{MONTHLY_YMAX}}", str(month_max))
     report = report.replace("{{MONTHLY_TABLE_ROWS}}", month_table_rows)
+    report = report.replace("{{CROSS_TABLE}}", cross_table)
 
     REPORT_FILE.parent.mkdir(parents=True, exist_ok=True)
     REPORT_FILE.write_text(report, encoding="utf-8")
