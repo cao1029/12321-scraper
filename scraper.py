@@ -110,7 +110,7 @@ def generate_report(rows, latest_count, now_cn):
     daily_max = 100
     if daily_counts:
         daily_max = int(max(daily_counts) * 1.1) + 1
-    daily_ymin = int(daily_max * 0.7)
+    daily_ymin = int(min(daily_counts) * 0.5) if daily_counts else 0
 
     daily_table_rows = "\n".join(
         f'<tr><td>{r["time"]}</td><td>{r["count"]:,}</td></tr>'
