@@ -40,13 +40,26 @@ jobs:
             const cnMin = now.getUTCMinutes();
             console.log(`Time: ${cnHour}:${String(cnMin).padStart(2,'0')} China`);
             
-            const target = (cnHour >= 8 && cnHour < 23) ? cnHour + 1 : 8;
+            let targetHour, targetMin;
+            if (cnHour >= 8 && cnHour < 23) {
+              targetHour = cnHour + 1;
+              targetMin = 0;
+            } else if (cnHour === 23 && cnMin < 55) {
+              targetHour = 23;
+              targetMin = 55;
+            } else {
+              targetHour = 8;
+              targetMin = 0;
+            }
+            
             let nowMin = cnHour * 60 + cnMin;
-            let tgtMin = target * 60;
-            if (target <= cnHour) tgtMin += 24 * 60;
+            let tgtMin = targetHour * 60 + targetMin;
+            if (targetHour < cnHour || (targetHour === cnHour && targetMin <= cnMin)) {
+              tgtMin += 24 * 60;
+            }
             let waitMin = Math.min(tgtMin - nowMin, 300);
             
-            console.log(`Target: ${target}:00, waiting ${waitMin}min`);
+            console.log(`Target: ${targetHour}:${String(targetMin).padStart(2,'0')}, waiting ${waitMin}min`);
             await new Promise(r => setTimeout(r, waitMin * 60000));
             
             await github.rest.actions.createWorkflowDispatch({
