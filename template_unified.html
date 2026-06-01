@@ -49,7 +49,7 @@ tr:hover { background: #fafbfc; }
 
 <div class="header">
   <h1>12321 网络不良与垃圾信息举报受理中心</h1>
-  <div class="subtitle">投诉数据抓取报告 | 更新时间: {{UPDATE_TIME}}</div>
+  <div class="subtitle">投诉数据报告 | 更新时间: {{UPDATE_TIME}}</div>
 </div>
 
 <div class="container">
@@ -61,7 +61,7 @@ tr:hover { background: #fafbfc; }
       <div class="value">{{LATEST_COUNT}}</div>
     </div>
     <div class="card blue">
-      <div class="label">今日抓取次数</div>
+      <div class="label">今日更新次数</div>
       <div class="value">{{TODAY_POINTS}}</div>
     </div>
     <div class="card orange">
@@ -76,10 +76,10 @@ tr:hover { background: #fafbfc; }
 
   <!-- Section 1: Daily per-time-slot -->
   <div class="section">
-    <h2>当日分时段抓取记录 <span class="badge">{{DATE_STR}}</span></h2>
+    <h2>当日分时段记录 <span class="badge">{{DATE_STR}}</span></h2>
     <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
     <table>
-      <thead><tr><th>抓取时间</th><th>投诉数量</th></tr></thead>
+      <thead><tr><th>时间</th><th>投诉数量</th></tr></thead>
       <tbody>{{DAILY_TABLE_ROWS}}</tbody>
     </table>
   </div>
@@ -87,10 +87,10 @@ tr:hover { background: #fafbfc; }
   <!-- Section 2: Monthly daily totals -->
   <div class="section">
     <h2>月度每日投诉总量 <span class="badge">{{CURRENT_MONTH}}</span></h2>
-    <p style="color:#888;font-size:13px;margin-bottom:12px;">取每日最后一次抓取数据作为当日投诉总量</p>
+    <p style="color:#888;font-size:13px;margin-bottom:12px;">取每日最后一次数据作为当日投诉总量</p>
     <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
     <table>
-      <thead><tr><th>日期</th><th>当日投诉总量</th><th>抓取时间</th></tr></thead>
+      <thead><tr><th>日期</th><th>当日投诉总量</th><th>时间</th></tr></thead>
       <tbody>{{MONTHLY_TABLE_ROWS}}</tbody>
     </table>
   </div>
@@ -98,7 +98,7 @@ tr:hover { background: #fafbfc; }
   <!-- Section 3: Cross-tabulation table (time slots x dates) -->
   <div class="section">
     <h2>月度分时段数据总览 <span class="badge">{{CURRENT_MONTH}}</span></h2>
-    <p style="color:#888;font-size:13px;margin-bottom:12px;">行为抓取时间点，列为日期，显示对应投诉数量</p>
+    <p style="color:#888;font-size:13px;margin-bottom:12px;">行为时间点，列为日期，显示对应投诉数量</p>
     <div style="overflow-x:auto;">
       <table style="min-width:100%;white-space:nowrap;">
         {{CROSS_TABLE}}
@@ -108,7 +108,7 @@ tr:hover { background: #fafbfc; }
 
 </div>
 
-<div class="footer">数据来源: www.12321.cn | 自动抓取生成</div>
+<div class="footer">数据来源: www.12321.cn | 自动生成</div>
 
 <script>
 // Daily chart

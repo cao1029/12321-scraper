@@ -25,16 +25,16 @@ tr:nth-child(even) { background: #f9f9f9; }
 <body>
 <div class="container">
 <h1>12321 投诉数据 - 月度统计</h1>
-<p class="info">月份: {{CURRENT_MONTH}} | 统计天数: {{STAT_DAYS}} 天 | 取每日最后一次抓取数据作为当日总量</p>
+<p class="info">月份: {{CURRENT_MONTH}} | 统计天数: {{STAT_DAYS}} 天 | 取每日最后一次数据作为当日总量</p>
 <div class="summary-box">
 <div class="summary-item"><div class="label">月均日投诉量</div><div class="value">{{MONTHLY_AVG}}</div></div>
 <div class="summary-item"><div class="label">统计天数</div><div class="value">{{STAT_DAYS}}</div></div>
 <div class="summary-item"><div class="label">今日最新</div><div class="value">{{LATEST_COUNT}}</div></div>
 </div>
 <div class="chart-box"><canvas id="monthlyChart"></canvas></div>
-<h2 style="text-align:center;">每日数据明细（当日最后一次抓取 = 当日总量）</h2>
+<h2 style="text-align:center;">每日数据明细（当日最后一次数据 = 当日总量）</h2>
 <table>
-<tr><th>日期</th><th>投诉总量</th><th>抓取时间</th></tr>
+<tr><th>日期</th><th>投诉总量</th><th>时间</th></tr>
 {{TABLE_ROWS}}
 </table>
 <p class="nav"><a href="daily_{{DATE_STR}}.html">查看当日详细柱状图</a></p>
