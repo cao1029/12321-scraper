@@ -386,7 +386,7 @@ body::after {
     <h1>12321 不良信息举报 · 数据指挥中心</h1>
     <span class="corner-tr"></span>
     <div class="info">
-      <span class="dot"></span> SYSTEM ONLINE &nbsp;|&nbsp; 2026-06-05 20:00:29
+      <span class="dot"></span> SYSTEM ONLINE &nbsp;|&nbsp; 2026-06-05 21:00:45
     </div>
   </div>
 
@@ -400,7 +400,7 @@ body::after {
       <div class="panel" style="flex:0 0 auto;">
         <div class="panel-title"><span class="icon"></span>实时投诉总量</div>
         <div class="kpi-big">
-          <div class="val">36,594</div>
+          <div class="val">37,886</div>
           <div class="lbl">2026-06-05 · 最新采集数据</div>
         </div>
       </div>
@@ -409,10 +409,10 @@ body::after {
       <div class="panel" style="flex:0 0 auto;">
         <div class="panel-title"><span class="icon"></span>监测指标</div>
         <div class="kpi-grid">
-          <div class="kpi-mini"><div class="val c">176</div><div class="lbl">累计数据点</div></div>
+          <div class="kpi-mini"><div class="val c">177</div><div class="lbl">累计数据点</div></div>
           <div class="kpi-mini"><div class="val p">10</div><div class="lbl">监测天数</div></div>
           <div class="kpi-mini"><div class="val g">44,772</div><div class="lbl">历史峰值</div></div>
-          <div class="kpi-mini"><div class="val c">32,702</div><div class="lbl">月均日投诉量</div></div>
+          <div class="kpi-mini"><div class="val c">32,960</div><div class="lbl">月均日投诉量</div></div>
         </div>
       </div>
 
@@ -437,10 +437,10 @@ body::after {
       </div>
       <!-- Map bottom bar -->
       <div class="map-bottom-bar">
-        <div class="item"><div class="v">36,594</div><div class="t">全国实时总量</div></div>
+        <div class="item"><div class="v">37,886</div><div class="t">全国实时总量</div></div>
         <div class="item"><div class="v">34</div><div class="t">覆盖省区市</div></div>
         <div class="item"><div class="v">5</div><div class="t">2026-06 统计天数</div></div>
-        <div class="item"><div class="v">163,511</div><div class="t">2026-06 累计总量</div></div>
+        <div class="item"><div class="v">164,803</div><div class="t">2026-06 累计总量</div></div>
         <div class="item"><div class="v">2026-05-27</div><div class="t">历史峰值日期</div></div>
       </div>
     </div>
@@ -490,7 +490,7 @@ body::after {
 
 // ============ DYNAMIC PROVINCE DATA (60/30/10 distribution) ============
 // Parse latest count from template
-var latestCount = parseInt('36,594'.replace(/,/g, '')) || 1000;
+var latestCount = parseInt('37,886'.replace(/,/g, '')) || 1000;
 
 // Region totals: East 60%, Central 30%, West 10%
 var eastTotal    = Math.round(latestCount * 0.60);
@@ -762,7 +762,7 @@ var cities = cityDefs.map(function(c) {
     grid: { left: '10%', right: '6%', top: '6%', bottom: '10%' },
     xAxis: {
       type: 'category',
-      data: ['08:01', '09:00', '10:00', '11:01', '12:00', '13:00', '14:00', '15:00', '16:00', '17:39', '17:56', '18:01', '18:58', '19:00', '20:00'],
+      data: ['08:01', '09:00', '10:00', '11:01', '12:00', '13:00', '14:00', '15:00', '16:00', '17:39', '17:56', '18:01', '18:58', '19:00', '20:00', '21:00'],
       axisLine: { lineStyle: { color: 'rgba(0,229,255,0.15)' } },
       axisTick: { show: false },
       axisLabel: { color: 'rgba(255,255,255,0.4)', fontSize: 8, rotate: 35, interval: 'auto' }
@@ -776,7 +776,7 @@ var cities = cityDefs.map(function(c) {
       type: 'line',
       smooth: true,
       symbol: 'none',
-      data: [821, 1301, 2220, 5428, 9958, 13890, 15919, 18376, 22756, 31457, 31457, 31457, 34521, 34521, 36594],
+      data: [821, 1301, 2220, 5428, 9958, 13890, 15919, 18376, 22756, 31457, 31457, 31457, 34521, 34521, 36594, 37886],
       lineStyle: { color: '#00e5ff', width: 1.5, shadowBlur: 8, shadowColor: '#00e5ff' },
       areaStyle: {
         color: new echarts.graphic.LinearGradient(0,0,0,1,[
@@ -810,7 +810,7 @@ var cities = cityDefs.map(function(c) {
     },
     series: [{
       type: 'bar',
-      data: [162805, 163511],
+      data: [162805, 164803],
       barWidth: '55%',
       itemStyle: {
         borderRadius: [4,4,0,0],
@@ -848,7 +848,7 @@ var cities = cityDefs.map(function(c) {
       smooth: true,
       symbol: 'circle',
       symbolSize: 4,
-      data: [28439, 16106, 24544, 28995, 33972, 39406, 36594],
+      data: [28439, 16106, 24544, 28995, 33972, 39406, 37886],
       lineStyle: { color: '#2979ff', width: 1.5, shadowBlur: 8, shadowColor: '#2979ff' },
       itemStyle: { color: '#2979ff', shadowBlur: 5, shadowColor: '#2979ff' },
       areaStyle: {
