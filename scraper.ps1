@@ -12,6 +12,7 @@ $projectDir    = "C:\Users\Administrator\scraper_12321"
 $dataFile      = Join-Path $projectDir "data\scraped_data.csv"
 $reportsDir    = Join-Path $projectDir "reports"
 $templateUnified = Join-Path $projectDir "template_unified.html"
+$templateOverview = Join-Path $projectDir "template_overview.html"
 $targetUrl     = "https://www.12321.cn/"
 
 # ============ 1. Fetch webpage ============
@@ -158,4 +159,92 @@ $report = $template `
 $reportPath = Join-Path $reportsDir "report.html"
 $report | Out-File -FilePath $reportPath -Encoding utf8
 Write-Host "$logPrefix Unified report generated: $reportPath"
+
+# ============ 8. Generate overview dashboard ============
+if (Test-Path $templateOverview) {
+    # ---- All-time stats ----
+    $totalDataPoints = @($allRows).Count
+    $totalDaysTracked = @($dailyTotals).Count
+
+    $allTimeHigh = 0
+    $allTimeHighDate = ""
+    foreach ($r in $dailyTotals) {
+        if ($r.count -gt $allTimeHigh) {
+            $allTimeHigh = $r.count
+            $allTimeHighDate = $r.date
+        }
+    }
+
+    # ---- All-time monthly aggregates ----
+    $monthlyGroups = $dailyTotals | Group-Object { $_.date.Substring(0, 7) } | Sort-Object Name
+    $historyMonths = @()
+    $historyTotals = @()
+    $historyAvgs   = @()
+    foreach ($mg in $monthlyGroups) {
+        $historyMonths += "'$($mg.Name)'"
+        $sum = ($mg.Group | Measure-Object -Property count -Sum).Sum
+        $historyTotals += $sum
+        $historyAvgs += [int]($sum / $mg.Count)
+    }
+    $historyMonthsJs = $historyMonths -join ", "
+    $historyTotalsJs = $historyTotals -join ", "
+    $historyAvgsJs   = $historyAvgs -join ", "
+
+    # ---- Current month stats ----
+    $monthDays = @($monthlyTotals).Count
+    $monthTotal = 0
+    if ($monthDays -gt 0) {
+        $monthTotal = ($monthlyTotals | Measure-Object -Property count -Sum).Sum
+    }
+
+    # ---- 7-day trend ----
+    $last7 = @($dailyTotals)[-7..-1]
+    $weekLabels = @()
+    $weekCounts = @()
+    foreach ($r in $last7) {
+        $weekLabels += "'$($r.date.Substring(5))'"
+        $weekCounts += $r.count
+    }
+    $weekLabelsJs = $weekLabels -join ", "
+    $weekCountsJs = $weekCounts -join ", "
+
+    # ---- Today's intraday ----
+    $todayLabelsOv = @()
+    $todayCountsOv = @()
+    foreach ($r in $todayRows) {
+        $todayLabelsOv += "'$($r.time.Substring(0, 5))'"
+        $todayCountsOv += $r.count
+    }
+    $todayLabelsOvJs = $todayLabelsOv -join ", "
+    $todayCountsOvJs = $todayCountsOv -join ", "
+
+    # ---- Fill template ----
+    $overviewTemplate = Get-Content -Path $templateOverview -Raw -Encoding UTF8
+    $overview = $overviewTemplate `
+        -replace '\{\{UPDATE_TIME\}\}', $updateTime `
+        -replace '\{\{DATE_STR\}\}', $dateStr `
+        -replace '\{\{CURRENT_MONTH\}\}', $currentMonth `
+        -replace '\{\{LATEST_COUNT\}\}', $count.ToString('N0') `
+        -replace '\{\{TOTAL_DATA_POINTS\}\}', $totalDataPoints `
+        -replace '\{\{TOTAL_DAYS_TRACKED\}\}', $totalDaysTracked `
+        -replace '\{\{ALL_TIME_HIGH\}\}', $allTimeHigh.ToString('N0') `
+        -replace '\{\{ALL_TIME_HIGH_DATE\}\}', $allTimeHighDate `
+        -replace '\{\{MONTH_DAYS\}\}', $monthDays `
+        -replace '\{\{MONTH_AVG\}\}', $monthAvg.ToString('N0') `
+        -replace '\{\{MONTH_TOTAL\}\}', $monthTotal.ToString('N0') `
+        -replace '\{\{HISTORY_MONTHS_JS\}\}', $historyMonthsJs `
+        -replace '\{\{HISTORY_TOTALS_JS\}\}', $historyTotalsJs `
+        -replace '\{\{HISTORY_AVGS_JS\}\}', $historyAvgsJs `
+        -replace '\{\{WEEK_LABELS_JS\}\}', $weekLabelsJs `
+        -replace '\{\{WEEK_COUNTS_JS\}\}', $weekCountsJs `
+        -replace '\{\{TODAY_LABELS_JS\}\}', $todayLabelsOvJs `
+        -replace '\{\{TODAY_COUNTS_JS\}\}', $todayCountsOvJs
+
+    $overviewPath = Join-Path $reportsDir "index.html"
+    $overview | Out-File -FilePath $overviewPath -Encoding utf8
+    Write-Host "$logPrefix Overview dashboard generated: $overviewPath"
+} else {
+    Write-Host "$logPrefix WARNING: Overview template not found: $templateOverview"
+}
+
 Write-Host "$logPrefix Done! Complaint count: $count"
