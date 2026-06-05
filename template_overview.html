@@ -488,53 +488,82 @@ body::after {
 <script>
 (function() {
 
-// ============ SIMULATED PROVINCE DATA ============
-var provinceList = [
-  '北京','天津','上海','重庆',
-  '河北','山西','辽宁','吉林','黑龙江',
-  '江苏','浙江','安徽','福建','江西','山东',
-  '河南','湖北','湖南','广东','广西','海南',
-  '四川','贵州','云南','西藏',
-  '陕西','甘肃','青海','宁夏','新疆',
-  '内蒙古','香港','澳门','台湾'
-];
+// ============ DYNAMIC PROVINCE DATA (60/30/10 distribution) ============
+// Parse latest count from template
+var latestCount = parseInt('{{LATEST_COUNT}}'.replace(/,/g, '')) || 1000;
 
-// Generate stable simulated data based on province index
-function simVal(name, idx) {
-  // Create a realistic distribution: coastal/populous = higher
-  var base = 500 + (idx * 37) % 800;
-  var high = ['广东','江苏','浙江','山东','河南','四川','北京','上海'];
-  var mid  = ['河北','湖南','湖北','福建','安徽','辽宁','广西','陕西','江西','重庆','云南','黑龙江'];
-  if (high.indexOf(name) >= 0) base += 2500 + Math.random() * 1500;
-  else if (mid.indexOf(name) >= 0) base += 1200 + Math.random() * 1000;
-  else base += 200 + Math.random() * 600;
-  return Math.round(base);
-}
+// Region totals: East 60%, Central 30%, West 10%
+var eastTotal    = Math.round(latestCount * 0.60);
+var centralTotal = Math.round(latestCount * 0.30);
+var westTotal     = latestCount - eastTotal - centralTotal; // remainder = exact 10%
 
-var provinceData = provinceList.map(function(name, i) {
-  return { name: name, value: simVal(name, i) };
+// Province weights within each region (higher = more complaints)
+var provinceMeta = {
+  // === 东部 (East) — 60%, weight sum = 100 ===
+  '广东': {r:'east',w:16}, '江苏':{r:'east',w:13}, '山东':{r:'east',w:12}, '浙江':{r:'east',w:11},
+  '上海': {r:'east',w:7},  '北京':{r:'east',w:7},  '福建':{r:'east',w:6},  '河北':{r:'east',w:5},
+  '辽宁': {r:'east',w:4},  '广西':{r:'east',w:4},  '香港':{r:'east',w:4},  '天津':{r:'east',w:3},
+  '台湾': {r:'east',w:5},  '海南':{r:'east',w:2},  '澳门':{r:'east',w:1},
+  // === 中部 (Central) — 30%, weight sum = 100 ===
+  '河南': {r:'central',w:18}, '湖北':{r:'central',w:14}, '湖南':{r:'central',w:14},
+  '安徽': {r:'central',w:12}, '江西':{r:'central',w:10}, '内蒙古':{r:'central',w:9},
+  '山西': {r:'central',w:8},  '黑龙江':{r:'central',w:8}, '吉林':{r:'central',w:7},
+  // === 西部 (West) — 10%, weight sum = 100 ===
+  '四川': {r:'west',w:22}, '重庆':{r:'west',w:14}, '陕西':{r:'west',w:12},
+  '云南': {r:'west',w:10}, '贵州':{r:'west',w:9},  '新疆':{r:'west',w:9},
+  '甘肃': {r:'west',w:7},  '西藏':{r:'west',w:7},  '宁夏':{r:'west',w:5},
+  '青海': {r:'west',w:5}
+};
+
+var regionWeights = { east: 100, central: 100, west: 100 };
+var regionTotals  = { east: eastTotal, central: centralTotal, west: westTotal };
+
+// Build province data array
+var provinceList = Object.keys(provinceMeta);
+var provinceData = provinceList.map(function(name) {
+  var m = provinceMeta[name];
+  var val = Math.round(regionTotals[m.r] * m.w / regionWeights[m.r]);
+  return { name: name, value: val };
 });
 
-// Top cities for scatter effect
-var cities = [
-  {name:'北京', coord:[116.46,39.92], val:3800},{name:'上海',coord:[121.48,31.22],val:4200},
-  {name:'广州',coord:[113.23,23.16],val:3500},{name:'深圳',coord:[114.07,22.62],val:3100},
-  {name:'成都',coord:[104.06,30.67],val:2800},{name:'杭州',coord:[120.19,30.26],val:2600},
-  {name:'武汉',coord:[114.31,30.52],val:2400},{name:'南京',coord:[118.78,32.04],val:2200},
-  {name:'郑州',coord:[113.65,34.76],val:2000},{name:'重庆',coord:[106.54,29.59],val:1900},
-  {name:'西安',coord:[108.95,34.27],val:1800},{name:'长沙',coord:[112.98,28.19],val:1700},
-  {name:'济南',coord:[117.00,36.65],val:1600},{name:'天津',coord:[117.20,39.13],val:1500},
-  {name:'沈阳',coord:[123.38,41.80],val:1400},{name:'福州',coord:[119.30,26.08],val:1300},
-  {name:'昆明',coord:[102.73,25.04],val:1200},{name:'合肥',coord:[117.27,31.86],val:1100},
-  {name:'南宁',coord:[108.33,22.84],val:1000},{name:'哈尔滨',coord:[126.63,45.75],val:950},
+// City scatter — scale values proportionally from province data
+var cityDefs = [
+  {name:'北京',c:[116.46,39.92],p:'北京'},{name:'上海',c:[121.48,31.22],p:'上海'},
+  {name:'广州',c:[113.23,23.16],p:'广东'},{name:'深圳',c:[114.07,22.62],p:'广东'},
+  {name:'成都',c:[104.06,30.67],p:'四川'},{name:'杭州',c:[120.19,30.26],p:'浙江'},
+  {name:'武汉',c:[114.31,30.52],p:'湖北'},{name:'南京',c:[118.78,32.04],p:'江苏'},
+  {name:'郑州',c:[113.65,34.76],p:'河南'},{name:'重庆',c:[106.54,29.59],p:'重庆'},
+  {name:'西安',c:[108.95,34.27],p:'陕西'},{name:'长沙',c:[112.98,28.19],p:'湖南'},
+  {name:'济南',c:[117.00,36.65],p:'山东'},{name:'天津',c:[117.20,39.13],p:'天津'},
+  {name:'沈阳',c:[123.38,41.80],p:'辽宁'},{name:'福州',c:[119.30,26.08],p:'福建'},
+  {name:'昆明',c:[102.73,25.04],p:'云南'},{name:'合肥',c:[117.27,31.86],p:'安徽'},
+  {name:'南宁',c:[108.33,22.84],p:'广西'},{name:'哈尔滨',c:[126.63,45.75],p:'黑龙江'},
 ];
+// Lookup province value
+var pvMap = {};
+provinceData.forEach(function(d) { pvMap[d.name] = d.value; });
+
+var cities = cityDefs.map(function(c) {
+  var pv = pvMap[c.p] || 1000;
+  return { name: c.name, coord: c.c, val: Math.round(pv * (0.15 + Math.random() * 0.1)) };
+});
 
 // ============ CHINA MAP (Center) ============
 (function() {
   var dom = document.getElementById('chinaMap');
   var chart = echarts.init(dom, 'dark');
 
-  fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+  // Load China map geoJSON (try local first, fallback to CDN)
+  var mapUrl = 'china.json';
+  fetch(mapUrl)
+    .then(function(res) {
+      if (!res.ok) throw new Error('local fail');
+      return res.json();
+    })
+    .catch(function() {
+      return fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+        .then(function(res) { return res.json(); });
+    })
     .then(function(res) { return res.json(); })
     .then(function(geoJson) {
       echarts.registerMap('china', geoJson);
