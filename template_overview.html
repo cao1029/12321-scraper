@@ -503,7 +503,6 @@ var flyLines = [
   var chart = echarts.init(dom, 'dark');
   var mapLoaded = false;
   var highlightTimer = null;
-  var flyLineTimer = null;
 
   function buildMapOption(geoJson) {
     echarts.registerMap('china', geoJson);
@@ -582,19 +581,9 @@ var flyLines = [
     highlightTimer = setInterval(function() {
       var name = provNames[scanIdx % provNames.length];
       chart.dispatchAction({type:'highlight',seriesIndex:0,name:name});
-      setTimeout(function(){ chart.dispatchAction({type:'downplay',seriesIndex:0,name:name}); }, 600);
+      setTimeout(function(){ chart.dispatchAction({type:'downplay',seriesIndex:0,name:name}); }, 700);
       scanIdx++;
-    }, 1500);
-
-    // === Dynamic fly lines: periodically update ===
-    flyLineTimer = setInterval(function() {
-      var shuffled = flyLines.slice().sort(function(){return Math.random()-0.5;}).slice(0,6);
-      chart.setOption({
-        series:[{},{},{},{},{
-          data: shuffled.map(function(pair){return{coords:[getCoord(pair[0]),getCoord(pair[1])]};})
-        }]
-      });
-    }, 8000);
+    }, 1800);
   }
 
   function getCoord(name) {

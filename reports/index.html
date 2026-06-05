@@ -352,7 +352,7 @@ body::after {
     <h1>12321 不良信息举报 · 数据指挥中心</h1>
     <span class="corner-tr"></span>
     <div class="info">
-      <span class="dot"></span> SYSTEM ONLINE &nbsp;|&nbsp; 2026-06-05 23:08:46
+      <span class="dot"></span> SYSTEM ONLINE &nbsp;|&nbsp; 2026-06-05 23:13:51
     </div>
   </div>
 
@@ -372,7 +372,7 @@ body::after {
       <div class="panel" style="flex:0 0 auto;">
         <div class="panel-title"><span class="icon"></span>监测指标</div>
         <div class="kpi-grid">
-          <div class="kpi-mini"><div class="val c">181</div><div class="lbl">累计数据点</div></div>
+          <div class="kpi-mini"><div class="val c">182</div><div class="lbl">累计数据点</div></div>
           <div class="kpi-mini"><div class="val p">10</div><div class="lbl">监测天数</div></div>
           <div class="kpi-mini"><div class="val g">44,772</div><div class="lbl">历史峰值</div></div>
           <div class="kpi-mini"><div class="val c">33,222</div><div class="lbl">月均日投诉量</div></div>
@@ -503,7 +503,6 @@ var flyLines = [
   var chart = echarts.init(dom, 'dark');
   var mapLoaded = false;
   var highlightTimer = null;
-  var flyLineTimer = null;
 
   function buildMapOption(geoJson) {
     echarts.registerMap('china', geoJson);
@@ -582,19 +581,9 @@ var flyLines = [
     highlightTimer = setInterval(function() {
       var name = provNames[scanIdx % provNames.length];
       chart.dispatchAction({type:'highlight',seriesIndex:0,name:name});
-      setTimeout(function(){ chart.dispatchAction({type:'downplay',seriesIndex:0,name:name}); }, 600);
+      setTimeout(function(){ chart.dispatchAction({type:'downplay',seriesIndex:0,name:name}); }, 700);
       scanIdx++;
-    }, 1500);
-
-    // === Dynamic fly lines: periodically update ===
-    flyLineTimer = setInterval(function() {
-      var shuffled = flyLines.slice().sort(function(){return Math.random()-0.5;}).slice(0,6);
-      chart.setOption({
-        series:[{},{},{},{},{
-          data: shuffled.map(function(pair){return{coords:[getCoord(pair[0]),getCoord(pair[1])]};})
-        }]
-      });
-    }, 8000);
+    }, 1800);
   }
 
   function getCoord(name) {
@@ -661,7 +650,7 @@ var flyLines = [
     backgroundColor:'transparent',
     grid:{left:'12%',right:'6%',top:'6%',bottom:'12%'},
     xAxis:{
-      type:'category', data:['08:01', '09:00', '10:00', '11:01', '12:00', '13:00', '14:00', '15:00', '16:00', '17:39', '17:56', '18:01', '18:58', '19:00', '20:00', '21:00', '22:01', '22:30', '22:36', '23:08'],
+      type:'category', data:['08:01', '09:00', '10:00', '11:01', '12:00', '13:00', '14:00', '15:00', '16:00', '17:39', '17:56', '18:01', '18:58', '19:00', '20:00', '21:00', '22:01', '22:30', '22:36', '23:08', '23:13'],
       axisLine:{lineStyle:{color:'rgba(0,229,255,0.18)'}}, axisTick:{show:false},
       axisLabel:{color:'rgba(255,255,255,0.5)',fontSize:9,rotate:35,interval:'auto'}
     },
@@ -670,7 +659,7 @@ var flyLines = [
       axisLabel:{color:'rgba(255,255,255,0.5)',fontSize:9,formatter:function(v){return(v/1000).toFixed(0)+'k';}}
     },
     series:[{
-      type:'line',smooth:true,symbol:'none',data:[821, 1301, 2220, 5428, 9958, 13890, 15919, 18376, 22756, 31457, 31457, 31457, 34521, 34521, 36594, 37886, 38627, 39193, 39193, 39193],
+      type:'line',smooth:true,symbol:'none',data:[821, 1301, 2220, 5428, 9958, 13890, 15919, 18376, 22756, 31457, 31457, 31457, 34521, 34521, 36594, 37886, 38627, 39193, 39193, 39193, 39193],
       lineStyle:{color:'#00e5ff',width:2,shadowBlur:10,shadowColor:'#00e5ff'},
       areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[
         {offset:0,color:'rgba(0,229,255,0.35)'},{offset:1,color:'rgba(0,229,255,0.02)'}
