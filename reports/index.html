@@ -352,7 +352,7 @@ body::after {
     <h1>12321 不良信息举报 · 数据指挥中心</h1>
     <span class="corner-tr"></span>
     <div class="info">
-      <span class="dot"></span> SYSTEM ONLINE &nbsp;|&nbsp; 2026-06-07 15:01:26
+      <span class="dot"></span> SYSTEM ONLINE &nbsp;|&nbsp; 2026-06-07 16:00:43
     </div>
   </div>
 
@@ -364,7 +364,7 @@ body::after {
       <div class="panel" style="flex:0 0 auto;">
         <div class="panel-title"><span class="icon"></span>实时投诉总量</div>
         <div class="kpi-big">
-          <div class="val">9,357</div>
+          <div class="val">11,120</div>
           <div class="lbl">2026-06-07 · 最新采集数据</div>
         </div>
       </div>
@@ -372,10 +372,10 @@ body::after {
       <div class="panel" style="flex:0 0 auto;">
         <div class="panel-title"><span class="icon"></span>监测指标</div>
         <div class="kpi-grid">
-          <div class="kpi-mini"><div class="val c">207</div><div class="lbl">累计数据点</div></div>
+          <div class="kpi-mini"><div class="val c">208</div><div class="lbl">累计数据点</div></div>
           <div class="kpi-mini"><div class="val p">12</div><div class="lbl">监测天数</div></div>
           <div class="kpi-mini"><div class="val g">44,772</div><div class="lbl">历史峰值</div></div>
-          <div class="kpi-mini"><div class="val c">29,755</div><div class="lbl">月均日投诉量</div></div>
+          <div class="kpi-mini"><div class="val c">30,007</div><div class="lbl">月均日投诉量</div></div>
         </div>
       </div>
 
@@ -398,10 +398,10 @@ body::after {
         </div>
       </div>
       <div class="map-bottom-bar">
-        <div class="item"><div class="v">9,357</div><div class="t">全国实时总量</div></div>
+        <div class="item"><div class="v">11,120</div><div class="t">全国实时总量</div></div>
         <div class="item"><div class="v">34</div><div class="t">覆盖省区市</div></div>
         <div class="item"><div class="v">7</div><div class="t">2026-06 统计天数</div></div>
-        <div class="item"><div class="v">208,288</div><div class="t">2026-06 累计总量</div></div>
+        <div class="item"><div class="v">210,051</div><div class="t">2026-06 累计总量</div></div>
         <div class="item"><div class="v">2026-05-27</div><div class="t">历史峰值日期</div></div>
       </div>
     </div>
@@ -446,7 +446,7 @@ body::after {
 (function() {
 
 // ============ DYNAMIC PROVINCE DATA ============
-var latestCount = parseInt('9,357'.replace(/,/g, '')) || 1000;
+var latestCount = parseInt('11,120'.replace(/,/g, '')) || 1000;
 var eastTotal = Math.round(latestCount * 0.60);
 var centralTotal = Math.round(latestCount * 0.30);
 var westTotal = latestCount - eastTotal - centralTotal;
@@ -650,7 +650,7 @@ var flyLines = [
     backgroundColor:'transparent',
     grid:{left:'12%',right:'6%',top:'6%',bottom:'12%'},
     xAxis:{
-      type:'category', data:['08:00', '09:02', '10:00', '11:01', '12:01', '13:01', '14:00', '15:01'],
+      type:'category', data:['08:00', '09:02', '10:00', '11:01', '12:01', '13:01', '14:00', '15:01', '16:00'],
       axisLine:{lineStyle:{color:'rgba(0,229,255,0.18)'}}, axisTick:{show:false},
       axisLabel:{color:'rgba(255,255,255,0.5)',fontSize:9,rotate:35,interval:'auto'}
     },
@@ -659,7 +659,7 @@ var flyLines = [
       axisLabel:{color:'rgba(255,255,255,0.5)',fontSize:9,formatter:function(v){return(v/1000).toFixed(0)+'k';}}
     },
     series:[{
-      type:'line',smooth:true,symbol:'none',data:[745, 998, 1478, 3001, 4912, 6854, 8036, 9357],
+      type:'line',smooth:true,symbol:'none',data:[745, 998, 1478, 3001, 4912, 6854, 8036, 9357, 11120],
       lineStyle:{color:'#00e5ff',width:2,shadowBlur:10,shadowColor:'#00e5ff'},
       areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[
         {offset:0,color:'rgba(0,229,255,0.35)'},{offset:1,color:'rgba(0,229,255,0.02)'}
@@ -686,7 +686,7 @@ var flyLines = [
       axisLabel:{color:'rgba(255,255,255,0.5)',fontSize:9,formatter:function(v){return(v/1000).toFixed(0)+'k';}}
     },
     series:[{
-      type:'bar', data:[162805, 208288], barWidth:'55%',
+      type:'bar', data:[162805, 210051], barWidth:'55%',
       itemStyle:{borderRadius:[5,5,0,0],
         color:new echarts.graphic.LinearGradient(0,0,0,1,[
           {offset:0,color:'#b388ff'},{offset:1,color:'rgba(179,136,255,0.2)'}
@@ -714,7 +714,7 @@ var flyLines = [
       axisLabel:{color:'rgba(255,255,255,0.5)',fontSize:9,formatter:function(v){return(v/1000).toFixed(0)+'k';}}
     },
     series:[{
-      type:'line',smooth:true,symbol:'circle',symbolSize:5,data:[24544, 28995, 33972, 39406, 39580, 32434, 9357],
+      type:'line',smooth:true,symbol:'circle',symbolSize:5,data:[24544, 28995, 33972, 39406, 39580, 32434, 11120],
       lineStyle:{color:'#2979ff',width:2,shadowBlur:10,shadowColor:'#2979ff'},
       itemStyle:{color:'#2979ff',shadowBlur:8,shadowColor:'#2979ff'},
       areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[
