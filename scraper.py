@@ -201,99 +201,6 @@ def generate_report(rows, latest_count, now_cn):
     print(f"Report generated: {REPORT_FILE}")
 
 
-def generate_overview(rows, latest_count, now_cn):
-    """Generate overview dashboard (index.html) from template."""
-    date_str = now_cn.strftime("%Y-%m-%d")
-    current_month = now_cn.strftime("%Y-%m")
-    update_time = now_cn.strftime("%Y-%m-%d %H:%M:%S")
-
-    # Parse rows with date/time fields
-    parsed = []
-    for r in rows:
-        dt = r["datetime"]
-        parsed.append({
-            "datetime": dt,
-            "date": dt[:10],
-            "time": dt[11:],
-            "count": r["count"],
-        })
-
-    # Daily totals: last entry per day
-    by_date = {}
-    for r in parsed:
-        by_date[r["date"]] = r
-    daily_totals = sorted(by_date.values(), key=lambda x: x["date"])
-
-    # ---- All-time stats ----
-    total_data_points = len(rows)
-    total_days_tracked = len(daily_totals)
-    all_time_high = max(r["count"] for r in daily_totals) if daily_totals else 0
-    all_time_high_date = ""
-    if daily_totals:
-        for r in daily_totals:
-            if r["count"] == all_time_high:
-                all_time_high_date = r["date"]
-                break
-
-    # ---- All-time monthly aggregates ----
-    monthly = {}
-    for r in daily_totals:
-        m = r["date"][:7]  # YYYY-MM
-        if m not in monthly:
-            monthly[m] = []
-        monthly[m].append(r["count"])
-
-    months_sorted = sorted(monthly.keys())
-    history_months_js = ", ".join(f"'{m}'" for m in months_sorted)
-    history_totals_js = ", ".join(str(sum(monthly[m])) for m in months_sorted)
-    history_avgs_js = ", ".join(str(int(sum(monthly[m]) / len(monthly[m]))) for m in months_sorted)
-
-    # ---- Current month stats ----
-    month_days = len(monthly.get(current_month, []))
-    month_total = sum(monthly.get(current_month, []))
-    month_avg = int(month_total / month_days) if month_days > 0 else 0
-
-    # ---- 7-day trend (last 7 daily totals) ----
-    last7 = daily_totals[-7:]
-    week_labels_js = ", ".join(f"'{r['date'][5:]}'" for r in last7)  # MM-DD
-    week_counts_js = ", ".join(str(r["count"]) for r in last7)
-
-    # ---- Today's intraday data ----
-    today_rows = [r for r in parsed if r["date"] == date_str]
-    today_labels_js = ", ".join(f"'{r['time'][:5]}'" for r in today_rows)
-    today_counts_js = ", ".join(str(r["count"]) for r in today_rows)
-
-    # ---- Read template and fill ----
-    if not OVERVIEW_TEMPLATE_FILE.exists():
-        print(f"WARNING: Overview template not found: {OVERVIEW_TEMPLATE_FILE}")
-        return
-
-    template = OVERVIEW_TEMPLATE_FILE.read_text(encoding="utf-8")
-
-    report = template.replace("{{UPDATE_TIME}}", update_time)
-    report = report.replace("{{DATE_STR}}", date_str)
-    report = report.replace("{{CURRENT_MONTH}}", current_month)
-    report = report.replace("{{LATEST_COUNT}}", f"{latest_count:,}")
-    report = report.replace("{{TOTAL_DATA_POINTS}}", str(total_data_points))
-    report = report.replace("{{TOTAL_DAYS_TRACKED}}", str(total_days_tracked))
-    report = report.replace("{{ALL_TIME_HIGH}}", f"{all_time_high:,}")
-    report = report.replace("{{ALL_TIME_HIGH_DATE}}", all_time_high_date)
-    report = report.replace("{{MONTH_DAYS}}", str(month_days))
-    report = report.replace("{{MONTH_AVG}}", f"{month_avg:,}")
-    report = report.replace("{{MONTH_TOTAL}}", f"{month_total:,}")
-    report = report.replace("{{HISTORY_MONTHS_JS}}", history_months_js)
-    report = report.replace("{{HISTORY_TOTALS_JS}}", history_totals_js)
-    report = report.replace("{{HISTORY_AVGS_JS}}", history_avgs_js)
-    report = report.replace("{{WEEK_LABELS_JS}}", week_labels_js)
-    report = report.replace("{{WEEK_COUNTS_JS}}", week_counts_js)
-    report = report.replace("{{TODAY_LABELS_JS}}", today_labels_js)
-    report = report.replace("{{TODAY_COUNTS_JS}}", today_counts_js)
-
-    OVERVIEW_REPORT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    OVERVIEW_REPORT_FILE.write_text(report, encoding="utf-8")
-    print(f"Overview generated: {OVERVIEW_REPORT_FILE}")
-
-
 def main():
     now_cn = datetime.now(CHINA_TZ)
     dt_str = now_cn.strftime("%Y-%m-%d %H:%M:%S")
@@ -321,8 +228,6 @@ def main():
     # 4. Generate report
     generate_report(rows, count, now_cn)
 
-    # 5. Generate overview dashboard
-    generate_overview(rows, count, now_cn)
 
     print(f"[{dt_str}] Done! Complaint count: {count}")
 
