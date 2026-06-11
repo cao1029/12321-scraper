@@ -1,6 +1,6 @@
 """
 12321.cn complaint data scraper.
-Runs on GitHub Actions every hour 8:00-22:00 China time.
+Runs on GitHub Actions at scheduled times: 08:00-23:00 hourly + 23:55 China time.
 Fetches complaint count, appends to CSV, generates unified HTML report.
 """
 import re
