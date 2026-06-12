@@ -6,6 +6,8 @@ on:
     # NOTE: Do NOT use hour ranges/lists (0-15 or 0,1,2...) — GitHub scheduler
     # silently drops most firings with restricted hour syntax. Only bare * works reliably.
     - cron: "0 * * * *"
+    # 23:55 China time extra run
+    - cron: "55 15 * * *"
   workflow_dispatch:
 
 concurrency:
