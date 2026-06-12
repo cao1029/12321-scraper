@@ -2,8 +2,10 @@ name: 12321 Scraper
 
 on:
   schedule:
-    # Every hour. scraper.py gates to 08:00-24:00 China time internally.
-    - cron: "7 * * * *"
+    # 08:00-23:00 China time, every hour on the hour (00:00-15:00 UTC)
+    - cron: "0 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 * * *"
+    # 23:55 China time (15:55 UTC)
+    - cron: "55 15 * * *"
   workflow_dispatch:
 
 concurrency:
