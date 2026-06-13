@@ -2,12 +2,7 @@ name: 12321 Scraper
 
 on:
   schedule:
-    # Every hour on the hour. scraper.py gates to 08:00-24:00 China time internally.
-    # NOTE: Do NOT use hour ranges/lists (0-15 or 0,1,2...) — GitHub scheduler
-    # silently drops most firings with restricted hour syntax. Only bare * works reliably.
     - cron: "0 * * * *"
-    # 23:55 China time extra run
-    - cron: "55 15 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -27,6 +22,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python scraper.py
       - name: push
+        continue-on-error: true
         run: |
           git config user.name "actions"
           git config user.email "actions@github.com"
@@ -34,3 +30,43 @@ jobs:
           git diff --staged --quiet && exit 0
           git commit -m "[auto] $(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')"
           git pull --rebase origin master && git push
+      - name: trigger
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            const now = new Date();
+            const cnHour = (now.getUTCHours() + 8) % 24;
+            const cnMin = now.getUTCMinutes();
+            console.log(`Time: ${cnHour}:${String(cnMin).padStart(2,'0')} China`);
+
+            let targetHour, targetMin;
+            if (cnHour >= 8 && cnHour < 23) {
+              targetHour = cnHour + 1;
+              targetMin = 0;
+            } else if (cnHour === 23 && cnMin < 55) {
+              targetHour = 23;
+              targetMin = 55;
+            } else {
+              targetHour = 8;
+              targetMin = 0;
+            }
+
+            let nowMin = cnHour * 60 + cnMin;
+            let tgtMin = targetHour * 60 + targetMin;
+            if (targetHour < cnHour || (targetHour === cnHour && targetMin <= cnMin)) {
+              tgtMin += 24 * 60;
+            }
+            let waitMin = Math.min(tgtMin - nowMin, 300);
+
+            console.log(`Target: ${targetHour}:${String(targetMin).padStart(2,'0')}, waiting ${waitMin}min`);
+            await new Promise(r => setTimeout(r, waitMin * 60000));
+
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'cao1029',
+              repo: '12321-scraper',
+              workflow_id: 'scraper.yml',
+              ref: 'master'
+            });
+            console.log('Chain continues!');
